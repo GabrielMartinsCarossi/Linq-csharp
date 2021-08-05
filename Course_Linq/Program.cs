@@ -54,16 +54,39 @@ namespace Course_Linq
                 new Product(11, "Level", 70.89, c1),
             };
 
-            var r1 = products.Where(p => p.Category.Tier == 1 && p.Price < 900.00);
+            //var r1 = products.Where(p => p.Category.Tier == 1 && p.Price < 900.00); 
+            var r1 =
+                from p in products
+                where p.Category.Tier == 1 && p.Price < 900
+                select p;
             Print("TIER 1 AND PRICE LOWER THAN $900.00: ", r1);
 
-            var r2 = products.Where(p => p.Category.Name == "Tools").Select(p => p.Name);
+            //var r2 = products.Where(p => p.Category.Name == "Tools").Select(p => p.Name);
+            var r2 =
+                from p in products
+                where p.Category.Name == "Tools"
+                select p.Name;
             Print("TOOLS' NAMES: ", r2);
 
-            var r3 = products.Where(p => p.Name[0] == 'C').Select(p => new { p.Name, p.Price, CategoryName = p.Category.Name});
+            //var r3 = products.Where(p => p.Name[0] == 'C').Select(p => new { p.Name, p.Price, CategoryName = p.Category.Name});
+            var r3 =
+                from p in products
+                where p.Name[0] == 'C'
+                select new
+                {
+                    p.Name,
+                    p.Price,
+                    CategoryName = p.Category.Name
+                };
             Print("PRODUCTS STARTING WITH C: (Anonymous object)", r3);
 
-            var r4 = products.Where(p => p.Category.Tier == 1).OrderBy(p => p.Price).ThenBy(p => p.Name);
+            //var r4 = products.Where(p => p.Category.Tier == 1).OrderBy(p => p.Price).ThenBy(p => p.Name);
+            var r4 =
+                from p in products
+                where p.Category.Tier == 1
+                orderby p.Name
+                orderby p.Price
+                select p;
             Print("TIER 1 ORDERED BY PRICE THEN NAME: ", r4);
 
             try
@@ -78,7 +101,12 @@ namespace Course_Linq
                 Console.WriteLine("Category 5: ");
                 var r15 = products.Where(p => p.Category.Id == 1).Select(p => p.Price).Aggregate(0.0, (x, y) => x + y);
                 Console.WriteLine("Category 1 aggregate sum: ");
-                var r16 = products.GroupBy(p => p.Category);
+
+                //var r16 = products.GroupBy(p => p.Category);
+                var r16 =
+                    from p in products
+                    group p by p.Category;
+
                 Console.WriteLine();
                 foreach (IGrouping<Category, Product> group in r16)
                 {
